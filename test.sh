@@ -9,7 +9,7 @@ pods[3]="rabbitmq-3"
 pods[4]="rabbitmq-4"
 size=${#pods[@]}
 index=$(($RANDOM % $size))
-echo "Chosen Pod ${array[$index]}"
+echo "Chosen Pod ${pods[$index]}"
 ##### K8s Stuff #####
 
 sudo python3 -m pip install -r requirements.txt
@@ -26,7 +26,7 @@ sleep 10
 ##### Wait #####
 
 ##### Kill Random pod #####
-kubectl delete pod ${array[$index]}  -n ${namespace}
+kubectl delete pod ${pods[$index]}  -n ${namespace}
 ##### Kill Random pod #####
 
 ##### Wait Some more #####
