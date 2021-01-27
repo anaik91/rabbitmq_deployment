@@ -12,6 +12,10 @@ spec:
      protocol: TCP
      port: 15672
      targetPort: 15672
+   - name: prom
+     protocol: TCP
+     port: 15692
+     targetPort: 15692
    - name: amqp
      protocol: TCP
      port: 5672

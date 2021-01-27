@@ -40,6 +40,9 @@ spec:
           - name: amqpssl
             protocol: TCP
             containerPort: 5671
+          - name: prom
+            protocol: TCP
+            containerPort: 15692
         livenessProbe:
           exec:
             # This is just an example. There is no "one true health check" but rather
