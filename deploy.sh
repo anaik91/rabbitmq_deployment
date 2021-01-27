@@ -40,5 +40,5 @@ else
     echo "Deploying Services with SSL"
     kubectl apply -f $MANIFEST_DIR/services_ssl.yaml -n ${NAMESPACE}
     echo "Deploying RabbitMQ Stateful Set with SSL"
-    kubectl apply -f $MANIFEST_DIR/statefulset.yaml_ssl -n ${NAMESPACE}
+    kubectl apply -f $MANIFEST_DIR/statefulset_ssl.yaml -n ${NAMESPACE}
 fi
