@@ -19,10 +19,9 @@ metadata:
   name: prometheus
 EOF
 
-${helm_bin} install prometheus \
+${helm_bin} upgrade --install prometheus \
     --namespace prometheus stable/prometheus \
     --version 10.3.1 -f ${MANIFEST_DIR}/prometheus.yaml
-
 
 echo "Deploying Grafana"
 echo "Creating Namespace: grafana"
@@ -32,7 +31,7 @@ kind: Namespace
 metadata:
   name: grafana
 EOF
-${helm_bin} install grafana \
+${helm_bin} upgrade --install grafana \
     --namespace grafana stable/grafana \
     --version 4.3.2 -f ${MANIFEST_DIR}/grafana.yaml
 
