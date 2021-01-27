@@ -1,15 +1,12 @@
 #!/bin/bash
 set -e
 
-#!/bin/bash
-set -e
-
-if [ "$1" = "deploy"  ]; then
-    action="deploy"
-elif [ "$1" = "deployssl"  ]; then
-    action="deployssl"
+if [ "$1" = "nonssl"  ]; then
+    action="nonssl"
+elif [ "$1" = "ssl"  ]; then
+    action="ssl"
 else
-    echo "Choose deploy OR deployssl"
+    echo "Choose nonssl OR ssl"
     exit 0
 fi
 echo "Action : ${action}"
@@ -23,7 +20,7 @@ kubectl get nodes
 echo "Deleting RBAC"
 kubectl delete -f $MANIFEST_DIR/rbac.yaml -n ${NAMESPACE}
 
-if [ "$action" = "deploy"  ]; then
+if [ "$action" = "nonssl"  ]; then
     echo "Deleting Configmap"
     kubectl delete -f $MANIFEST_DIR/configmap.yaml -n ${NAMESPACE}
     echo "Deleting Services"
