@@ -20,10 +20,11 @@ python3 asynchronous_consumer_example.py&
 ##### Running Pub Sub #####
 pub_pid=$(ps -ef |grep asynchronous_publisher_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
 sub_pid=$(ps -ef |grep asynchronous_consumer_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
-
+echo "Publisher PID : ${pub_pid}"
+echo "Subscriber PID : ${sub_pid}"
 ##### Wait #####
-echo  "Sleeping for 20s"
-sleep 20
+echo  "Sleeping for 30s"
+sleep 30
 ##### Wait #####
 
 ##### Kill Random pod #####
@@ -32,7 +33,7 @@ kubectl delete pod ${pod_name}  -n ${namespace}
 ##### Kill Random pod #####
 
 ##### Wait Some more #####
-sleep 10
+sleep 20
 ##### Wait Some more #####
 
 ##### Stop Pub Sub #####
