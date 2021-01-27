@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0111,C0103,R0205
-
+import sys
 import functools
 import logging
 import time
@@ -444,7 +444,10 @@ class ReconnectingExampleConsumer(object):
 
 def main():
     #logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-    amqp_url = 'amqp://guest:guest@52.236.19.78:5672/vh1'
+    rabbitmq_host=sys.argv[1]
+    rabbitmq_port=sys.argv[2]
+    rabbitmq_vhost=sys.argv[3]
+    amqp_url = 'amqp://guest:guest@{}:{}/{}'.format(rabbitmq_host,rabbitmq_port,rabbitmq_vhost)
     consumer = ReconnectingExampleConsumer(amqp_url)
     consumer.run()
 
