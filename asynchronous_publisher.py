@@ -383,7 +383,7 @@ def main():
     rabbitmq_port=sys.argv[2]
     rabbitmq_vhost=sys.argv[3]
     example = ExamplePublisher(
-        'amqp://guest:guest@{}:{}/vh1?connection_attempts=3&heartbeat=3600'.format(rabbitmq_host,rabbitmq_port,rabbitmq_vhost)
+        'amqp://guest:guest@{}:{}/{}?connection_attempts=3&heartbeat=3600'.format(rabbitmq_host,rabbitmq_port,rabbitmq_vhost)
     )
     example.run()
 
