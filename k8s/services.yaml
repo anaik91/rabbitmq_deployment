@@ -6,7 +6,7 @@ metadata:
     app: rabbitmq
     type: LoadBalancer
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
    - name: http
      protocol: TCP
