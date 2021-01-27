@@ -380,7 +380,7 @@ def main():
     #logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
     # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
     example = ExamplePublisher(
-        'amqp://guest:guest@52.236.19.78:5672/%2F?connection_attempts=3&heartbeat=3600'
+        'amqp://guest:guest@52.236.19.78:5672/vh1?connection_attempts=3&heartbeat=3600'
     )
     example.run()
 
