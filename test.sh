@@ -12,17 +12,22 @@ echo "Chosen Pod ${pod_name}"
 sudo python3 -m pip install -r requirements.txt
 
 ##### Running Pub Sub #####
+echo  "Invoking Publisher in Background"
 python3 asynchronous_publisher_example.py&
+
+echo  "Invoking Consumer in Background"
 python3 asynchronous_consumer_example.py&
 ##### Running Pub Sub #####
 pub_pid=$(ps -ef |grep asynchronous_publisher_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
 sub_pid=$(ps -ef |grep asynchronous_consumer_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
 
 ##### Wait #####
-sleep 10
+echo  "Sleeping for 20s"
+sleep 20
 ##### Wait #####
 
 ##### Kill Random pod #####
+echo  "Killing Pod : ${pod_name}"
 kubectl delete pod ${pod_name}  -n ${namespace}
 ##### Kill Random pod #####
 
@@ -32,13 +37,13 @@ sleep 10
 
 ##### Stop Pub Sub #####
 echo "Killing Publisher"
-kill -9 pub_pid
+kill -9 $pub_pid
 sleep 5
 echo "Killing Subscriber"
-kill -9 sub_pid
+kill -9 $sub_pid
 ##### Stop Pub Sub #####
 
-sent_msg_count=$(cat sent.json|wc -l)
-received_msg_count=$(cat received.json|wc -l)
+sent_msg_count=$(cat sent.text|wc -l)
+received_msg_count=$(cat received.txt|wc -l)
 echo -e "\nNumber of Sent Messages : ${sent_msg_count}"
 echo -e "\nNumber of Received Messages : ${received_msg_count}"
