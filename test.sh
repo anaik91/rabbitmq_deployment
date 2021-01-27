@@ -44,7 +44,7 @@ echo "Killing Subscriber"
 kill -9 $sub_pid
 ##### Stop Pub Sub #####
 
-sent_msg_count=$(cat sent.text|wc -l)
+sent_msg_count=$(cat sent.txt|wc -l)
 received_msg_count=$(cat received.txt|wc -l)
 echo -e "\nNumber of Sent Messages : ${sent_msg_count}"
 echo -e "\nNumber of Received Messages : ${received_msg_count}"
