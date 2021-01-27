@@ -36,4 +36,4 @@ ${helm_bin} upgrade --install grafana \
     --version 4.3.2 -f ${MANIFEST_DIR}/grafana.yaml
 
 grafana_password=$(kubectl get secret -n grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode)
-echo "Log into Grafana using user: admin & password: ${grafana_password}"
+echo -e "\n\nLog into Grafana using user: admin & password: ${grafana_password}"

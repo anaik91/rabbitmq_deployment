@@ -25,7 +25,8 @@ datasources:
       access: proxy
       isDefault: true
 dashboards:
-  Erlang-Distribution:
+  default:
+    Erlang-Distribution:
       gnetId: 11352
       revision: 5
       datasource: Prometheus
