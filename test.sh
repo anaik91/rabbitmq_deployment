@@ -29,7 +29,7 @@ sleep 30
 
 ##### Kill Random pod #####
 echo  "Killing Pod : ${pod_name}"
-kubectl delete pod ${pod_name}  -n ${namespace}
+kubectl delete pod ${pod_name}  -n ${NAMESPACE}
 ##### Kill Random pod #####
 
 ##### Wait Some more #####
