@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ##### K8s Stuff #####
-namespace="test-rabbitmq"
-pods=($(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' -n ${namespace}))
+NAMESPACE="test-rabbitmq"
+pods=($(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' -n ${NAMESPACE}))
 size=${#pods[@]}
 index=$(($RANDOM % $size))
 pod_name=${pods[$index]}
