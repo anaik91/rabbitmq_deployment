@@ -2,6 +2,12 @@
 MANIFEST_DIR="k8s"
 echo "Deploying prometheus"
 
+#### Install Helm ####
+curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 /tmp/get_helm.sh
+bash /tmp/get_helm.sh
+#### Install Helm ####
+
 echo "Creating Namespace: prometheus"
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
