@@ -2,3 +2,5 @@ __pycache__
 __pycache__/**
 sent.json
 received.json
+sent.txt
+received.txt

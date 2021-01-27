@@ -2,6 +2,7 @@
 set -e
 
 MANIFEST_DIR="k8s"
+
 echo "Listing Nodes"
 kubectl get nodes
 

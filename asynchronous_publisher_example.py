@@ -9,7 +9,7 @@ import pika
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
-LOGGER.propagate = False
+#LOGGER.propagate = False
 
 
 class ExamplePublisher(object):
@@ -49,6 +49,8 @@ class ExamplePublisher(object):
         self._stopping = False
         self._url = amqp_url
         self._messages = []
+        self._report_file = 'sent.txt'
+        open(self._report_file, 'w').close()
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -307,7 +309,8 @@ class ExamplePublisher(object):
                                     properties)
         self._message_number += 1
         self._deliveries.append(self._message_number)
-        self._messages.append(message)
+        self.write_report(message)
+        #self._messages.append(message)
         LOGGER.info('Published message # %i', self._message_number)
         self.schedule_next_message()
 
@@ -331,8 +334,8 @@ class ExamplePublisher(object):
                         not self._connection.is_closed):
                     # Finish closing
                     self._connection.ioloop.start()
-        with open('sent.json','w') as fl:
-            fl.write("\n".join(self._messages))
+        # with open('sent.json','w') as fl:
+        #     fl.write("\n".join(self._messages))
         LOGGER.info('Stopped')
 
     def stop(self):
@@ -363,11 +366,18 @@ class ExamplePublisher(object):
         if self._connection is not None:
             LOGGER.info('Closing connection')
             self._connection.close()
+    
+    def write_report(self,msg):
+        with open(self._report_file, "a+") as file_object:
+            file_object.seek(0)
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            file_object.write(msg)
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-    logging.disable(logging.DEBUG)
+    #logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
     # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
     example = ExamplePublisher(
         'amqp://guest:guest@52.236.19.78:5672/%2F?connection_attempts=3&heartbeat=3600'

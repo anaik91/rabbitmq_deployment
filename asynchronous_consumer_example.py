@@ -9,7 +9,7 @@ import json
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
-LOGGER.propagate = False
+#LOGGER.propagate = False
 
 class ExampleConsumer(object):
     """This is an example consumer that will handle unexpected interactions
@@ -49,6 +49,8 @@ class ExampleConsumer(object):
         # for higher consumer throughput
         self._prefetch_count = 1
         self._deliveries = []
+        self._report_file = 'received.txt'
+        open(self._report_file, 'w').close()
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -314,8 +316,9 @@ class ExampleConsumer(object):
         """
         LOGGER.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
-        self._deliveries.append(body.decode('utf-8').replace('"',''))
+        #self._deliveries.append(body.decode('utf-8').replace('"',''))
         self.acknowledge_message(basic_deliver.delivery_tag)
+        self.write_report(body.decode('utf-8').replace('"',''))
 
     def acknowledge_message(self, delivery_tag):
         """Acknowledge the message delivery from RabbitMQ by sending a
@@ -390,9 +393,16 @@ class ExampleConsumer(object):
             else:
                 self._connection.ioloop.stop()
             LOGGER.info('Stopped')
-        with open('received.json','w') as fl:
-            fl.write("\n".join(self._deliveries))
+        # with open('received.json','w') as fl:
+        #     fl.write("\n".join(self._deliveries))
 
+    def write_report(self,msg):
+        with open(self._report_file, "a+") as file_object:
+            file_object.seek(0)
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            file_object.write(msg)
 
 class ReconnectingExampleConsumer(object):
     """This is an example consumer that will reconnect if the nested

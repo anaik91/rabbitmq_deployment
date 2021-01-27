@@ -2,14 +2,11 @@
 
 ##### K8s Stuff #####
 namespace="test-rabbitmq"
-pods[0]="rabbitmq-0"
-pods[1]="rabbitmq-1"
-pods[2]="rabbitmq-2"
-pods[3]="rabbitmq-3"
-pods[4]="rabbitmq-4"
+pods=($(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' -n ${namespace}))
 size=${#pods[@]}
 index=$(($RANDOM % $size))
-echo "Chosen Pod ${pods[$index]}"
+pod_name=${pods[$index]}
+echo "Chosen Pod ${pod_name}"
 ##### K8s Stuff #####
 
 sudo python3 -m pip install -r requirements.txt
@@ -26,7 +23,7 @@ sleep 10
 ##### Wait #####
 
 ##### Kill Random pod #####
-kubectl delete pod ${pods[$index]}  -n ${namespace}
+kubectl delete pod ${pod_name}  -n ${namespace}
 ##### Kill Random pod #####
 
 ##### Wait Some more #####
@@ -34,11 +31,11 @@ sleep 10
 ##### Wait Some more #####
 
 ##### Stop Pub Sub #####
-for child in $(jobs -p); do
-    echo kill "$child" 
-    trap "kill $child;exit 1" INT
-done
-wait $(jobs -p)
+echo "Killing Publisher"
+kill -9 pub_pid
+sleep 5
+echo "Killing Subscriber"
+kill -9 sub_pid
 ##### Stop Pub Sub #####
 
 sent_msg_count=$(cat sent.json|wc -l)
