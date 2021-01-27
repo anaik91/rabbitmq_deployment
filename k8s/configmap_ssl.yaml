@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+data:
+  enabled_plugins: |
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s,rabbitmq_prometheus].
+
+  rabbitmq.conf: |
+      ## Cluster formation. See https://www.rabbitmq.com/cluster-formation.html to learn more.
+      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      ## Should RabbitMQ node name be computed from the pod's hostname or IP address?
+      ## IP addresses are not stable, so using [stable] hostnames is recommended when possible.
+      ## Set to "hostname" to use pod hostnames.
+      ## When this value is changed, so should the variable used to set the RABBITMQ_NODENAME
+      ## environment variable.
+      cluster_formation.k8s.address_type = hostname
+      ## How often should node cleanup checks run?
+      cluster_formation.node_cleanup.interval = 30
+      ## Set to false if automatic removal of unknown/absent nodes
+      ## is desired. This can be dangerous, see
+      ##  * https://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup
+      ##  * https://groups.google.com/forum/#!msg/rabbitmq-users/wuOfzEywHXo/k8z_HWIkBgAJ
+      cluster_formation.node_cleanup.only_log_warning = true
+      cluster_partition_handling = autoheal
+      ## See https://www.rabbitmq.com/ha.html#master-migration-data-locality
+      queue_master_locator=min-masters
+      ## This is just an example.
+      ## This enables remote access for the default user with well known credentials.
+      ## Consider deleting the default user and creating a separate user with a set of generated
+      ## credentials instead.
+      ## Learn more at https://www.rabbitmq.com/access-control.html#loopback-users
+      loopback_users.guest = false
+      listeners.ssl.default = 5671
+      ssl_options.cacertfile = /etc/rabbitmq/ca_certificate.pem
+      ssl_options.certfile   = /etc/rabbitmq/server_certificate.pem
+      ssl_options.keyfile    = /etc/rabbitmq/server_key.pem
+      ssl_options.verify     = verify_peer
+      ssl_options.fail_if_no_peer_cert = true
+
+
+  ca_certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIDRTCCAi2gAwIBAgIJAJnK2nkzIWxpMA0GCSqGSIb3DQEBCwUAMDExIDAeBgNV
+      BAMMF1RMU0dlblNlbGZTaWduZWR0Um9vdENBMQ0wCwYDVQQHDAQkJCQkMB4XDTIx
+      MDEyNzEyNDY1MVoXDTMxMDEyNTEyNDY1MVowMTEgMB4GA1UEAwwXVExTR2VuU2Vs
+      ZlNpZ25lZHRSb290Q0ExDTALBgNVBAcMBCQkJCQwggEiMA0GCSqGSIb3DQEBAQUA
+      A4IBDwAwggEKAoIBAQCytECL5Jw/ECVufXH2oMPp1tfUw9ULk65i1Hkk1Yj2ggGc
+      K0zY/p0+jUiIbzXU3OkkDtWVCaapKwt5iyE+ch4vKWQ8iSzs39QezW9Kz7igTeix
+      U4HCEw5pdHsafaMIXBk3y8K8SoA+fhENivlRMaLvYZ++HJfOA5o52kZuIwVHVXFg
+      FgYG0tgH7Vp843HMz7Bgd1dCKSQTcnkAX2hDTjP3NfgsHcnMuCwFnQBU56cAVsIi
+      KJ/MfF6L3S2QMvXhS3GzK4PYxQlGQ6iy4OoeNiZvF9Emzo1GxIfKPP8TxfOpkIW8
+      fZMVNYkzlJny30xjBGRFGGeYUuXnSv66D0kT51pHAgMBAAGjYDBeMAsGA1UdDwQE
+      AwIBBjAdBgNVHQ4EFgQUt1uynUEmledm+uBPBGu4/Qp5DM4wHwYDVR0jBBgwFoAU
+      t1uynUEmledm+uBPBGu4/Qp5DM4wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
+      AQsFAAOCAQEAVNYb6g3v6P7FR2fLfUNRLuMwbVPOL4nF/WmR8N9l6w321C+cWoQU
+      A+CPJL6GrKUgCwpIm0k1e+ChTENzCKlQQ9OcrG5IELnZBYddlPgDxsB28pCc5RmT
+      y2oWDuJGKR0ustorOkF99Pvnj/1xS0t1JuSGOXugEu2C7LI8bIasXsMsSd+d9Wyu
+      BPL+M/e+0onfS4+fh3nIUkcb6G1NodXG6s9WNNXoiXJKK3NfhLSjr+hvLGR3mvrR
+      HN9imowp7XNXQxjh0reQx3D6mXv/rr35t+aUzRjqsCa0wc+VHSHZD/NsszAn20k8
+      Slwu6Lx0o1tGR5FjK+sHwlZVDYUC3lf61w==
+      -----END CERTIFICATE-----
+
+  server_certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIDdzCCAl+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAxMSAwHgYDVQQDDBdUTFNH
+      ZW5TZWxmU2lnbmVkdFJvb3RDQTENMAsGA1UEBwwEJCQkJDAeFw0yMTAxMjcxMjQ2
+      NTFaFw0zMTAxMjUxMjQ2NTFaMCgxFTATBgNVBAMMDGFuc2libGUtbm9kZTEPMA0G
+      A1UECgwGc2VydmVyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyVdQ
+      vnynvepc1PwZwLL9k3VQSy/oV5ff10I1iNxcf6bFXQBcKJDYtD/gRiTq8T5qTq++
+      djY50n+9gcn/ZeXYXXR4JqhqspFIh2kSf2RkqDs3JXiTwlyNZ4HoymqnHTUVSg+c
+      ni5q3SJPBCIJ5wwrzqb8tYhE1WL0vtGvY5AWFCU5WJNcW7oKXMeswPPA2YaF+B1j
+      8HEiB98032nB/FD+obIyM4izKsmCJawJWUS5pYDg5VstTVvGLEtrEMC1Eym79PYv
+      +wEUpBV62pUK0PNrZgkX2oE2MTrIsNByT5r06uofA0w+1WXEj9RPq4jRT0Qmc2ZV
+      jeWJPvImRMVHzA5LZwIDAQABo4GiMIGfMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgWg
+      MBMGA1UdJQQMMAoGCCsGAQUFBwMBMDAGA1UdEQQpMCeCDGFuc2libGUtbm9kZYIM
+      YW5zaWJsZS1ub2Rlgglsb2NhbGhvc3QwHQYDVR0OBBYEFNlEB/tnYiIwSG3+jJvM
+      JrZpxuXqMB8GA1UdIwQYMBaAFLdbsp1BJpXnZvrgTwRruP0KeQzOMA0GCSqGSIb3
+      DQEBCwUAA4IBAQAIo/pVdPZ/ebfFtYTAH3uVEhyqPBZVhwWyS2NotHHhkjJBtP6M
+      hcEQS8oq8H0kvvDMDwibN2LZIMzSwoVjeEiynr0t1TuevUxU94yuRWlGVGKuTIGQ
+      iNADgk87MnxlU73CQRuUhrnH4BAW/QOBSiN+pq1rxsgGtpniiFbPnDae2f1oTRLa
+      s0dSmp68RGRH9J6ieG3AVuCbztd6jJpizHZ06uWivc8ClHoWBBDFtzLrrNKQFu7z
+      tbvrgTH0y83iu1283WuGkp6SMdEy0GlsKDqUbCAfxpxJHWrC0o11cSpTYfTAA+qx
+      fkLY6xjtHd+ZVY3sC3k8tvN3QNZ3t3EZbp06
+      -----END CERTIFICATE-----
+
+  server_key: |
+      -----BEGIN ENCRYPTED PRIVATE KEY-----
+      MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIap5nXlOITj4CAggA
+      MB0GCWCGSAFlAwQBKgQQXePlJMtarkke43iCNmWikwSCBNB6Db4kuiin21AFNn+M
+      h5oRrZJG4fdqP+O1jAonhum9JkkktPKAgrHaLVsulK4sjOuxU9lLJN0xYuMd4Ulu
+      Dtvcisu/k7yR6PbdFkWPZ8zKD9Cc4G4GWy6oyFm++8S02Lhrje6f73qdu3SvXtB2
+      vV9YYrdUQY2XDjpIGZxwt+WHEaCr2mXIWrjKj8c8DYJ21Y9hxrlUxvYBR+UGsaN9
+      Ejb+MFQA4nZjdRHb+MJf+6fbNpofpwFu25QcGh0QWkp7l8wgeHLRm8OY6tX9HeqI
+      7Z+MZMkVdn7bBW19j43abdD+Gfr0lJFw3DqDlYyRfSYd49jxce5nd7gtTHmUngub
+      tzgZdK8IcfZO+Ph5vDjiXfDjq/jEhJV40gl3yL68oEOvuANy9oODaSs7vuRwvB0f
+      0devVM9CC1DUOv4h/HKDdWxShL6NS3+XATHIrqPoQMxzQsfJnhDwBdHq0/ihpqoQ
+      dTXbAnhyYDtm9I8th0uoniPfuCMW3jUH5sBuC43DdD/T0KNSeFmFVDjQFXqYvX7y
+      tGgpg8GRouOwDbn6ij/rgUyS203lsdSAuDULnf9y/OK8hA+uhdWk31jV2IewaL8n
+      EfTEcNRExrEc3VmHF/bCBOneo0e6Mjxzqowjp2lCDd2e1QraVZLASz4xv09/iM25
+      mlOFtwxk41EdbHAB0E+mm9lX2mHE7tLR5ozLuJj0KPcKoJXVdCE1SoagicUQB3vI
+      E8YPVJ8UrTuTBezbR/k4iJLlYOSWDC+MFx+POpHdITcAOOKqhpfOwnwPx9sHADDY
+      IhK4rnpoEOBQjhJDOA6C0xx7vXVQRw3ZpLKaXMM1qhYSGJfLcO1+UG09X84EKh0T
+      cjNbuHH/i2mS/fB3gPY/L7JjTRGzoqu/1lGHuMYKqYbVFtiNX1ar1HOPDYhk11Ut
+      oq+q9v3YrAIZAdUoqTid5G9H+i93yiS5jyxVE+SVVDIXiHlOlvmbZUDqgWXUo7tG
+      gcirQ1QOD4hqKevvlsLw1ZAWvJRUG6zo2AMlie7ELIphbu+CNdihyOMSH2YCYvpM
+      HHIkBM7XPjU31+y8UubLv5qTxD98FKGAJI1/ExRLtiYeiBtFJmqgepR8BmuALbnJ
+      OQ5O7mSP5Hvdu+JvQR9kVSsCUpbtuiPAEVGMaovyFG7cGkml/kZ8Z2CakDKU4taB
+      P17EbbD6rtHXONjTwXoyRVl3p1qNnKVfe/gxGqpchW1AekTOob1WkQPlhqwPcWZb
+      a/nf7cCOGMud22kO9v896rMzfpysic27lfrcaX5rXdGfBu6XvGyD62PbzISyhd3D
+      wODH/WWbSfFgnRCalc8gyR9mLvdcOmmECnL2LrpmJz8JoD9qVPrdwa3ErYQCE53+
+      ihu/lhVtGChM4hgi3uiwrA0AkqhbS/PoCXFXn5jNmnLhAOQwfpq6NOqe3IujZ05+
+      gJhl7O119mIz7Bw7q34OF1t79EnVukZhLLFMmG13giOdufulyx1ppmQJIHv2ZHEv
+      yO6Bhqw8JqpihMsl8K00RVyeeIzLQR+kAZEHMNlrJVB/tmYvbbpOHCeaP0vf6M3p
+      WY3wna+z5tLTiIZ4REu7HfM+XIcty1jrE55OaS6NQYRODTYLx9ZhqMkDRKYuGBMJ
+      AOMZbKDn2//Ppxd378aU16gt9A==
+      -----END ENCRYPTED PRIVATE KEY-----
