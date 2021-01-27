@@ -13,13 +13,13 @@ sudo python3 -m pip install -r requirements.txt
 
 ##### Running Pub Sub #####
 echo  "Invoking Publisher in Background"
-python3 asynchronous_publisher_example.py&
+python3 asynchronous_publisher.py&
 
 echo  "Invoking Consumer in Background"
-python3 asynchronous_consumer_example.py&
+python3 asynchronous_consumer.py&
 ##### Running Pub Sub #####
-pub_pid=$(ps -ef |grep asynchronous_publisher_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
-sub_pid=$(ps -ef |grep asynchronous_consumer_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
+pub_pid=$(ps -ef |grep asynchronous_publisher.py | head -1 | tr -s " " " " | cut -d " " -f2)
+sub_pid=$(ps -ef |grep asynchronous_consumer.py | head -1 | tr -s " " " " | cut -d " " -f2)
 echo "Publisher PID : ${pub_pid}"
 echo "Subscriber PID : ${sub_pid}"
 ##### Wait #####
