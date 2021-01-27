@@ -8,7 +8,12 @@ echo "Listing Nodes"
 kubectl get nodes
 
 echo "Creating Namespace: ${NAMESPACE}"
-kubectl create ns ${NAMESPACE}
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${NAMESPACE}
+EOF
 
 echo "Deploying RBAC"
 kubectl apply -f $MANIFEST_DIR/rbac.yaml -n ${NAMESPACE}
