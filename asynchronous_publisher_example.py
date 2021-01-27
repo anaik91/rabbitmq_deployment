@@ -9,6 +9,7 @@ import pika
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
+LOGGER.propagate = False
 
 
 class ExamplePublisher(object):
@@ -366,7 +367,7 @@ class ExamplePublisher(object):
 
 def main():
     logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-
+    logging.disable(logging.DEBUG)
     # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
     example = ExamplePublisher(
         'amqp://guest:guest@52.236.19.78:5672/%2F?connection_attempts=3&heartbeat=3600'

@@ -9,7 +9,7 @@ import json
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
-
+LOGGER.propagate = False
 
 class ExampleConsumer(object):
     """This is an example consumer that will handle unexpected interactions
@@ -433,7 +433,7 @@ class ReconnectingExampleConsumer(object):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+    #logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
     amqp_url = 'amqp://guest:guest@52.236.19.78:5672/%2F'
     consumer = ReconnectingExampleConsumer(amqp_url)
     consumer.run()

@@ -15,8 +15,8 @@ echo "Chosen Pod ${pods[$index]}"
 sudo python3 -m pip install -r requirements.txt
 
 ##### Running Pub Sub #####
-python3 asynchronous_publisher_example.py &> /dev/null
-python3 asynchronous_consumer_example.py &> /dev/null
+python3 asynchronous_publisher_example.py&
+python3 asynchronous_consumer_example.py&
 ##### Running Pub Sub #####
 pub_pid=$(ps -ef |grep asynchronous_publisher_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
 sub_pid=$(ps -ef |grep asynchronous_consumer_example.py | head -1 | tr -s " " " " | cut -d " " -f2)
@@ -34,9 +34,11 @@ sleep 10
 ##### Wait Some more #####
 
 ##### Stop Pub Sub #####
-kill -2 ${pub_pid}
-sleep 2
-kill -2 ${sub_pid}
+for child in $(jobs -p); do
+    echo kill "$child" 
+    trap "kill $child;exit 1" INT
+done
+wait $(jobs -p)
 ##### Stop Pub Sub #####
 
 sent_msg_count=$(cat sent.json|wc -l)
